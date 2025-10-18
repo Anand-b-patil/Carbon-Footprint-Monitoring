@@ -1,0 +1,28 @@
+from fastapi import FastAPI
+from app.core.middleware import request_context_middleware
+from app.api.v1.auth import router as auth_router
+from app.api.v1.tenants import router as tenants_router
+from app.api.v1.ingest import router as ingest_router
+from app.api.v1.ingest_upload import router as ingest_upload_router
+from app.api.v1.factors import router as factors_router
+from app.api.v1.emissions import router as emissions_router
+from app.api.v1.analytics import router as analytics_router
+from app.api.v1.reports import router as reports_router
+
+app = FastAPI(title="Carbon Footprint Monitoring API", version="0.1.0")
+app.middleware("http")(request_context_middleware)
+
+
+@app.get("/health")
+def health() -> dict:
+    return {"status": "ok"}
+
+
+app.include_router(auth_router)
+app.include_router(tenants_router)
+app.include_router(ingest_router)
+app.include_router(ingest_upload_router)
+app.include_router(factors_router)
+app.include_router(emissions_router)
+app.include_router(analytics_router)
+app.include_router(reports_router)

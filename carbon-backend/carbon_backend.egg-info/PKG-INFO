@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: carbon-backend
+Version: 0.1.0
+Summary: Carbon Footprint Monitoring API (FastAPI)
+Author-email: Your Org <dev@example.com>
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi
+Requires-Dist: uvicorn[standard]
+Requires-Dist: SQLAlchemy>=2.0
+Requires-Dist: psycopg2-binary
+Requires-Dist: alembic
+Requires-Dist: pydantic>=2.0
+Requires-Dist: pydantic-settings
+Requires-Dist: python-multipart
+Requires-Dist: redis
+Requires-Dist: celery
+Requires-Dist: pandas
+Requires-Dist: passlib[bcrypt]
+Requires-Dist: python-jose[cryptography]
+Requires-Dist: python-dateutil
+Requires-Dist: pytest
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+
+# Carbon Footprint Monitoring API
+
+FastAPI backend for multi-tenant carbon accounting.
+
+## Local run
+
+```bash
+python -m venv .venv
+# Windows PowerShell
+. .venv/Scripts/Activate.ps1
+pip install -e .
+pip install fastapi "uvicorn[standard]" "SQLAlchemy>=2.0" psycopg2-binary alembic \
+            "pydantic>=2.0" pydantic-settings python-multipart redis celery pandas \
+            "passlib[bcrypt]" "python-jose[cryptography]" python-dateutil pytest
+
+# .env must define DATABASE_URL
+alembic upgrade head
+python scripts/seed_factors.py
+uvicorn app.main:app --reload
+pytest -q
+```
+
+## Health
+
+GET `/health` → `{ "status": "ok" }`

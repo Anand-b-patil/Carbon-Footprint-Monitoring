@@ -1,0 +1,1 @@
+# Analytics admin endpoints placeholder
