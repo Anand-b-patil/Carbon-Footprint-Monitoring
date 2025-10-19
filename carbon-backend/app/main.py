@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import socket
 from app.core.middleware import request_context_middleware
 from app.api.v1.auth import router as auth_router
 from app.api.v1.tenants import router as tenants_router
@@ -26,3 +27,31 @@ app.include_router(factors_router)
 app.include_router(emissions_router)
 app.include_router(analytics_router)
 app.include_router(reports_router)
+
+
+def get_ip_address() -> str:
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = "127.0.0.1"
+    finally:
+        try:
+            s.close()
+        except Exception:
+            pass
+    return ip
+
+
+if __name__ == "__main__":
+    import uvicorn
+    host_ip = "0.0.0.0"
+    port = 5000
+    print("\n" + "=" * 50)
+    print("Server is running on:")
+    print(f"Local URL:     http://localhost:{port}")
+    print(f"Network URL:   http://{get_ip_address()}:{port}")
+    print(f"API Docs URL:  http://{get_ip_address()}:{port}/docs")
+    print("=" * 50 + "\n")
+    uvicorn.run(app, host=host_ip, port=port)
