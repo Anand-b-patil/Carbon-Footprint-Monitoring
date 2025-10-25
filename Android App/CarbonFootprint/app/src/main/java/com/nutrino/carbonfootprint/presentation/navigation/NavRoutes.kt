@@ -10,3 +10,18 @@ object SIGN_UP_SCREEN
 
 @Serializable
 object SIGN_IN_SCREEN
+
+@Serializable
+object DASHBOARD_SCREEN
+
+@Serializable
+object FACILITIES_SCREEN
+
+@Serializable
+object DATA_INGESTION_SCREEN
+
+@Serializable
+object ANALYTICS_SCREEN
+
+@Serializable
+object PROFILE_SCREEN
