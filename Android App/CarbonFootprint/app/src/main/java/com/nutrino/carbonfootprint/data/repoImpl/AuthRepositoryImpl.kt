@@ -3,6 +3,8 @@ package com.nutrino.carbonfootprint.data.repoImpl
 import com.nutrino.carbonfootprint.constants.Constants
 import com.nutrino.carbonfootprint.data.local.UserPrefrence
 import com.nutrino.carbonfootprint.data.logs.debugLogs
+import com.nutrino.carbonfootprint.data.remote.auth.SignInRequest
+import com.nutrino.carbonfootprint.data.remote.auth.SignInResponse
 import com.nutrino.carbonfootprint.data.remote.auth.SignUpRequest
 import com.nutrino.carbonfootprint.data.remote.auth.SignUpResponse
 import com.nutrino.carbonfootprint.data.state.ResultState
@@ -30,16 +32,40 @@ class AuthRepositoryImpl @Inject constructor(
                 this.contentType(ContentType.Application.Json)
             }.body<SignUpResponse>()
 
-            if (response.access_token.isNotEmpty()){
+            if (!response.access_token.isNullOrEmpty()){
                 userPrefrence.updateAcessToken(response.access_token)
                 emit(ResultState.Success(response))
             } else {
-                emit(ResultState.Error("Access Token is null"))
+                emit(ResultState.Error("Access Token is null or empty"))
             }
 
         } catch (e: Exception){
             debugLogs(
                 constant = Constants.BASE_URL + Constants.SIGN_UP,
+                e = e
+            )
+            emit(ResultState.Error(e.message ?: "Unknown error occurred"))
+        }
+    }
+
+    override suspend fun signIn(signInRequest: SignInRequest): Flow<ResultState<SignInResponse>> = flow {
+        emit(ResultState.Loading)
+        try {
+            val response = httpClient.post(Constants.BASE_URL + Constants.SIGN_IN) {
+                this.setBody(signInRequest)
+                this.contentType(ContentType.Application.Json)
+            }.body<SignInResponse>()
+
+            if (!response.access_token.isNullOrEmpty()){
+                userPrefrence.updateAcessToken(response.access_token)
+                emit(ResultState.Success(response))
+            } else {
+                emit(ResultState.Error("Access Token is null or empty"))
+            }
+
+        } catch (e: Exception){
+            debugLogs(
+                constant = Constants.BASE_URL + Constants.SIGN_IN,
                 e = e
             )
             emit(ResultState.Error(e.message ?: "Unknown error occurred"))

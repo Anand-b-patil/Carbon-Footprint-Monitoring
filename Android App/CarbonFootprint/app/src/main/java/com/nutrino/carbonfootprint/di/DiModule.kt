@@ -4,6 +4,7 @@ import android.content.Context
 import com.nutrino.carbonfootprint.data.local.UserPrefrence
 import com.nutrino.carbonfootprint.data.repoImpl.AuthRepositoryImpl
 import com.nutrino.carbonfootprint.domain.repository.AuthRepository
+import com.nutrino.carbonfootprint.domain.usecase.SignInUseCase
 import com.nutrino.carbonfootprint.domain.usecase.SignUpUseCase
 import dagger.Module
 import dagger.Provides
@@ -61,6 +62,11 @@ object DiModule {
     @Provides
     fun provideSignUpUseCase(authRepository: AuthRepository): SignUpUseCase{
         return SignUpUseCase(authRepository = authRepository)
+    }
+
+    @Provides
+    fun provideSignInUseCase(authRepository: AuthRepository): SignInUseCase{
+        return SignInUseCase(authRepository = authRepository)
     }
 
 }

@@ -7,3 +7,6 @@ object OVER_VIEW_SCREEN
 
 @Serializable
 object SIGN_UP_SCREEN
+
+@Serializable
+object SIGN_IN_SCREEN

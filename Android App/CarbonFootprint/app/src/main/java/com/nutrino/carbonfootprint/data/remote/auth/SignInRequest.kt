@@ -3,7 +3,7 @@ package com.nutrino.carbonfootprint.data.remote.auth
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SignUpResponse(
-    val access_token: String? = null,
-    val token_type: String? = null
+data class SignInRequest(
+    val email: String,
+    val password: String
 )

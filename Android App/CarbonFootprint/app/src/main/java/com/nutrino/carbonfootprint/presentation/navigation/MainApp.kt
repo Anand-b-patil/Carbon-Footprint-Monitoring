@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.nutrino.carbonfootprint.presentation.screens.OverViewScreen
+import com.nutrino.carbonfootprint.presentation.screens.SignInScreen
 import com.nutrino.carbonfootprint.presentation.screens.SignUpScreen
 import com.nutrino.carbonfootprint.presentation.viewmodels.UserPreferenceViewModel
 
@@ -21,11 +22,18 @@ fun MainApp(userPreferenceViewModel: UserPreferenceViewModel = hiltViewModel()) 
         OVER_VIEW_SCREEN
     }){
         composable<SIGN_UP_SCREEN> {
-            SignUpScreen()
+            SignUpScreen(onSignUpSuccess = {
+                navController.navigate(
+                    SIGN_UP_SCREEN
+                )
+            })
 
         }
         composable<OVER_VIEW_SCREEN> {
             OverViewScreen(navController = navController)
+        }
+        composable<SIGN_IN_SCREEN> {
+            SignInScreen ()
         }
     }
 
