@@ -7,11 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @HiltViewModel
 class UserPreferenceViewModel @Inject constructor(
@@ -21,22 +19,22 @@ class UserPreferenceViewModel @Inject constructor(
     private val _isInitialized = MutableStateFlow(false)
     val isInitialized = _isInitialized.asStateFlow()
 
-    // --- StateFlows for exposing data to UI ---
+    // --- StateFlow for exposing access token to UI ---
     private val _accessToken = MutableStateFlow<String?>(null)
     val accessToken = _accessToken.asStateFlow()
 
+    // --- StateFlow for checking if user is logged in ---
+    private val _isLoggedIn = MutableStateFlow(false)
+    val isLoggedIn = _isLoggedIn.asStateFlow()
+
     init {
         viewModelScope.launch {
-            // Combine all flows and wait until they emit their first value
-            combine(
-                userPrefrence.acessToken
-            ) { _ -> } // we don't care about values, only that they emitted
-                .first() // <-- waits until it emits once
-
-            _isInitialized.value = true // ✅ only now mark ready
+            // Wait for access token to emit its first value
+            userPrefrence.acessToken.first()
+            _isInitialized.value = true
         }
 
-        // Launch collectors as usual
+        // Start observing access token
         observeAccessToken()
     }
 
@@ -45,14 +43,22 @@ class UserPreferenceViewModel @Inject constructor(
         viewModelScope.launch {
             userPrefrence.acessToken.collect { token ->
                 _accessToken.value = token
+                _isLoggedIn.value = !token.isNullOrEmpty()
             }
         }
     }
 
-    // --- Update tokens ---
+    // --- Update access token ---
     fun updateAccessToken(newToken: String) {
         viewModelScope.launch(Dispatchers.IO) {
             userPrefrence.updateAcessToken(newToken)
+        }
+    }
+
+    // --- Clear token (logout) ---
+    fun clearToken() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userPrefrence.clearToken()
         }
     }
 }

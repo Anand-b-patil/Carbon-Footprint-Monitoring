@@ -2,6 +2,9 @@ package com.nutrino.carbonfootprint.di
 
 import android.content.Context
 import com.nutrino.carbonfootprint.data.local.UserPrefrence
+import com.nutrino.carbonfootprint.data.repoImpl.AuthRepositoryImpl
+import com.nutrino.carbonfootprint.domain.repository.AuthRepository
+import com.nutrino.carbonfootprint.domain.usecase.SignUpUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,6 +47,20 @@ object DiModule {
     @Provides
     fun userPrefrenceObj(@ApplicationContext context: Context): UserPrefrence {
         return UserPrefrence(context)
+    }
+
+    @Provides
+    fun provideAutjRepo(userPrefrence: UserPrefrence, httpClient: HttpClient): AuthRepository{
+        return AuthRepositoryImpl(
+            userPrefrence = userPrefrence,
+            httpClient = httpClient
+        )
+    }
+
+    //USECASE
+    @Provides
+    fun provideSignUpUseCase(authRepository: AuthRepository): SignUpUseCase{
+        return SignUpUseCase(authRepository = authRepository)
     }
 
 }
