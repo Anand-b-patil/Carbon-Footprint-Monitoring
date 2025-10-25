@@ -11,16 +11,22 @@ import javax.inject.Inject
 
 private val Context.dataStore by preferencesDataStore("token_store")
 class UserPrefrence @Inject constructor(private val context: Context){
+    
     private val access_token = stringPreferencesKey(Constants.ACCESS_TOKEN)
-    val acessToken:Flow<String> = context.dataStore.data.map {
-        it[access_token] ?: ""
+    
+    val acessToken: Flow<String?> = context.dataStore.data.map {
+        it[access_token]
     }
 
-    suspend fun updateAcessToken(token: String){
+    suspend fun updateAcessToken(token: String) {
         context.dataStore.edit {
             it[access_token] = token
         }
     }
-
-
+    
+    suspend fun clearToken() {
+        context.dataStore.edit {
+            it.remove(access_token)
+        }
+    }
 }
