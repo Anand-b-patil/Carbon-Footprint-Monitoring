@@ -26,8 +26,7 @@ export function login(token:string){
         localStorage.setItem("token",token);
         setAuthToken(token);
     }catch(err){
-        // eslint-disable-next-line no-console
-        console.error("Error in setting token in local storage",err);
+        console.error("Error in setting token in local storage", err);
     }
 }
 
