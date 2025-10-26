@@ -4,7 +4,11 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { signup, login } from "@/libs/auth/api";
+// auth API is used via Redux thunks
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/lib/store";
+import { signupUser, setToken } from "@/lib/auth/authSlice";
+import { Logger, LogTags } from "@/lib/logger";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -14,21 +18,42 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const dispatch = useDispatch();
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
     try {
-      const resp = await signup({
-        org_name: orgName,
-        email,
-        password,
-      });
-    login(resp.access_token);
-      // Redirect to app
-      router.push("/");
-    } catch (err: any) {
-      setError(err?.response?.data?.detail || err?.message || "Signup failed");
+      const action = await (dispatch as AppDispatch)(
+        signupUser({ org_name: orgName, email, password })
+      );
+      if (signupUser.fulfilled.match(action)) {
+        const token = action.payload.access_token;
+        dispatch(setToken(token));
+        Logger.i(LogTags.AUTH, `User signed up: ${email}`);
+        router.push("/");
+      } else {
+        const payload = (action as { payload?: unknown }).payload;
+        Logger.e(LogTags.AUTH, `Signup failed: ${JSON.stringify(payload)}`);
+        let message = "Signup failed";
+        if (payload && typeof payload === "object") {
+          const p = payload as Record<string, unknown>;
+          if (typeof p.message === "string") message = p.message;
+          else {
+            try {
+              message = JSON.stringify(payload);
+            } catch {
+              message = String(payload);
+            }
+          }
+        }
+        setError(message);
+      }
+    } catch (err: unknown) {
+      const categorizedError = err as Error;
+      Logger.e(LogTags.AUTH, `Unexpected error in signup: ${categorizedError.message}`);
+      setError(categorizedError.message || "Signup failed");
     } finally {
       setLoading(false);
     }
