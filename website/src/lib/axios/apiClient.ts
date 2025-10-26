@@ -23,3 +23,12 @@ export function setAuthToken(token?: string) {
     }
 }
 
+// Add response interceptor to normalize errors if desired
+apiClient.interceptors.response.use(
+    (r) => r,
+    (error) => {
+        // pass through, caller will categorize
+        return Promise.reject(error);
+    }
+);
+

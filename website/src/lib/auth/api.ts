@@ -1,4 +1,5 @@
 import { apiClient, setAuthToken } from "@/lib/axios/apiClient";
+import { categorizeAxiosError } from "@/lib/errors";
 
 export type SignupRequest={
     org_name:string;
@@ -12,8 +13,12 @@ export type TokenResponse={
 };
 
 export async function signup(data:SignupRequest){
-    const response=await apiClient.post<TokenResponse>("/v1/auth/signup",data);
-    return response.data;
+    try {
+        const response = await apiClient.post<TokenResponse>("/v1/auth/signup", data);
+        return response.data;
+    } catch (err) {
+        throw categorizeAxiosError(err);
+    }
 }
 
 export function login(token:string){
@@ -21,7 +26,7 @@ export function login(token:string){
         localStorage.setItem("token",token);
         setAuthToken(token);
     }catch(err){
-         
+        // eslint-disable-next-line no-console
         console.error("Error in setting token in local storage",err);
     }
 }

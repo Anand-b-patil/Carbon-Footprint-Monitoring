@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -15,6 +19,7 @@
     "@mui/material": "^7.3.4",
     "@reduxjs/toolkit": "^2.9.2",
     "@tanstack/react-query": "^5.90.5",
+  "react-redux": "^8.1.2",
     "axios": "^1.12.2",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
