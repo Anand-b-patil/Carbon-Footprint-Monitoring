@@ -25,7 +25,7 @@ export default function ReportInstructions() {
       <div className="space-y-4">
         {instructions.map((instruction) => (
           <div key={instruction.number} className="flex items-start gap-4">
-            <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center shrink-0">
               <span className="text-gray-900 font-bold text-sm">
                 {instruction.number}
               </span>

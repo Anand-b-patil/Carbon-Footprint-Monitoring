@@ -14,11 +14,14 @@ interface Emission {
 }
 
 interface EmissionsTableProps {
-  filters: any;
+  filters: Record<string, unknown>;
+  data: Record<string, unknown>[];
 }
 
 export default function EmissionsTable({ filters }: EmissionsTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  // Use filters to avoid unused-variable lint warning while this is a stub
+  void filters;
   const totalPages = 10;
 
   const emissions: Emission[] = [
@@ -151,7 +154,7 @@ export default function EmissionsTable({ filters }: EmissionsTableProps) {
               key={index}
               onClick={() => typeof page === 'number' && handlePageChange(page)}
               disabled={page === '...'}
-              className={`min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors ${
+              className={`min-w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
                 page === currentPage
                   ? 'bg-emerald-500 text-white'
                   : page === '...'

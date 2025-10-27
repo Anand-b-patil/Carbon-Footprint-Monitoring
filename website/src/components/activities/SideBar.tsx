@@ -33,7 +33,7 @@ export default function Sidebar() {
       {/* User Profile */}
       <div className="p-6 border-b border-gray-800">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-linear-to-br from-gray-600 to-gray-700 flex items-center justify-center">
             <span className="text-white text-lg font-semibold">A</span>
           </div>
           <div>

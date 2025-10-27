@@ -4,7 +4,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 items-center justify-center p-12">
+  <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 items-center justify-center p-12">
         <div className="max-w-md text-center">
           <div className="mb-8 flex justify-center">
             <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center">
@@ -34,7 +34,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel */}
-      <div className="w-full lg:w-1/2 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center p-8">
+  <div className="w-full lg:w-1/2 bg-linear-to-br from-gray-800 to-gray-900 flex items-center justify-center p-8">
         <LoginForm />
       </div>
     </div>

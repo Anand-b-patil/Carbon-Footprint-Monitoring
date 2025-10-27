@@ -1,16 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
 import FacilitiesTable from '@/components/facilities/FacilitiesTable';
 import SearchBar from '@/components/facilities/SearchBar';
 
 export default function FacilitiesContent() {
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   const handleNewFacility = () => {
-    console.log('New Facility clicked');
-    // Navigate to new facility form or open modal
+    router.push('/facilities/new');
   };
 
   return (

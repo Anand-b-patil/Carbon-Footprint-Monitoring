@@ -25,6 +25,8 @@ interface FactorsTableProps {
 
 export default function FactorsTable({ filters }: FactorsTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  // Use filters to avoid unused variable ESLint warning in placeholder table
+  void filters;
 
   const emissionFactors: EmissionFactor[] = [
     {
@@ -189,7 +191,7 @@ export default function FactorsTable({ filters }: FactorsTableProps) {
           <button
             key={page}
             onClick={() => handlePageChange(page)}
-            className={`min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors ${
+            className={`min-w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
               currentPage === page
                 ? 'bg-gray-700 text-white'
                 : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'

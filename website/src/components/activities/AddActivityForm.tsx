@@ -77,7 +77,7 @@ export default function AddActivityForm() {
                 value={formData.dateTime}
                 onChange={handleChange}
                 placeholder="mm/dd/yyyy, --:-- -"
-                className="w-full px-4 py-3 bg-gray-700/30 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent [color-scheme:dark]"
+                className="w-full px-4 py-3 bg-gray-700/30 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent scheme-dark"
                 required
               />
               <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />

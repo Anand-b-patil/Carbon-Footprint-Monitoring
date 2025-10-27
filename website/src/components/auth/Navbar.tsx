@@ -57,7 +57,7 @@ export default function Navbar() {
             </button>
 
             {/* User Avatar */}
-            <button className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 hover:opacity-90 transition-opacity">
+            <button className="w-10 h-10 rounded-full bg-linear-to-br from-orange-400 to-pink-400 hover:opacity-90 transition-opacity">
               <span className="sr-only">User menu</span>
             </button>
           </div>

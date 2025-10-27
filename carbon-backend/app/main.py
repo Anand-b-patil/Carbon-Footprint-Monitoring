@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import socket
 from app.core.middleware import request_context_middleware
 from app.api.v1.auth import router as auth_router
@@ -11,6 +12,16 @@ from app.api.v1.analytics import router as analytics_router
 from app.api.v1.reports import router as reports_router
 
 app = FastAPI(title="Carbon Footprint Monitoring API", version="0.1.0")
+
+# Configure CORS for frontend communication
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Next.js dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.middleware("http")(request_context_middleware)
 
 

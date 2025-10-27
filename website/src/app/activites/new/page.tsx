@@ -3,7 +3,7 @@ import AddActivityForm from '@/components/activities/AddActivityForm';
 
 export default function AddActivityPage() {
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900">
+  <div className="flex min-h-screen bg-linear-to-br from-gray-900 via-emerald-950 to-gray-900">
       <Sidebar />
       
       <main className="flex-1 p-8">

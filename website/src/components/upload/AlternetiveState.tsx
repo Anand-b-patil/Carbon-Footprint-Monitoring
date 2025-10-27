@@ -80,7 +80,7 @@ export default function AlternativeStates({
       {state === 'complete' && (
         <div className="bg-emerald-900/30 backdrop-blur-sm rounded-xl p-6 border border-emerald-700/50">
           <div className="flex items-start gap-3">
-            <CheckCircle className="w-6 h-6 text-emerald-500 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="w-6 h-6 text-emerald-500 shrink-0 mt-0.5" />
             <div>
               <h3 className="text-white font-semibold mb-1">Upload Complete</h3>
               <p className="text-gray-300 text-sm">Your data is now being processed.</p>
@@ -93,7 +93,7 @@ export default function AlternativeStates({
       {state === 'error' && (
         <div className="bg-red-900/30 backdrop-blur-sm rounded-xl p-6 border border-red-700/50">
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
             <div>
               <h3 className="text-white font-semibold mb-1">Upload Failed</h3>
               <p className="text-gray-300 text-sm">
