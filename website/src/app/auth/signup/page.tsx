@@ -1,85 +1,34 @@
-// website/app/(auth)/signup/page.tsx
-"use client";
+import SignUpForm from '@/components/auth/SignUpForm';
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-// auth API is used via Redux thunks
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/lib/store";
-import { signupUser, setToken } from "@/lib/auth/authSlice";
-import { Logger, LogTags } from "@/lib/logger";
-
-export default function SignupPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [orgName, setOrgName] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const dispatch = useDispatch();
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    try {
-      const action = await (dispatch as AppDispatch)(
-        signupUser({ org_name: orgName, email, password })
-      );
-      if (signupUser.fulfilled.match(action)) {
-        const token = action.payload.access_token;
-        dispatch(setToken(token));
-        Logger.i(LogTags.AUTH, `User signed up: ${email}`);
-        router.push("/");
-      } else {
-        const payload = (action as { payload?: unknown }).payload;
-        Logger.e(LogTags.AUTH, `Signup failed: ${JSON.stringify(payload)}`);
-        let message = "Signup failed";
-        if (payload && typeof payload === "object") {
-          const p = payload as Record<string, unknown>;
-          if (typeof p.message === "string") message = p.message;
-          else {
-            try {
-              message = JSON.stringify(payload);
-            } catch {
-              message = String(payload);
-            }
-          }
-        }
-        setError(message);
-      }
-    } catch (err: unknown) {
-      const categorizedError = err as Error;
-      Logger.e(LogTags.AUTH, `Unexpected error in signup: ${categorizedError.message}`);
-      setError(categorizedError.message || "Signup failed");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+export default function SignUpPage() {
   return (
-    <main style={{ maxWidth: 540, margin: "4rem auto" }}>
-      <h1>Create account</h1>
-      <form onSubmit={onSubmit}>
-        <label>
-          Organization name
-          <input value={orgName} onChange={(e) => setOrgName(e.target.value)} required />
-        </label>
-        <label>
-          Email
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </label>
-        <label>
-          Password
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} minLength={8} required />
-        </label>
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating…" : "Create account"}
-        </button>
-        {error && <div style={{ color: "red", marginTop: 12 }}>{error}</div>}
-      </form>
-    </main>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900 flex items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="flex items-center justify-center mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+              <svg
+                className="w-6 h-6 text-emerald-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold text-white">EcoTrack</h1>
+          </div>
+        </div>
+
+        {/* Sign Up Form */}
+        <SignUpForm />
+      </div>
+    </div>
   );
 }
