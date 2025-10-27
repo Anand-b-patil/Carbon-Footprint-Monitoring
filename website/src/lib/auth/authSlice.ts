@@ -7,7 +7,8 @@ export type User = {
   id: number;
   email: string;
   role: string;
-  org: unknown;
+  org_id: number;
+  is_active: boolean;
 };
 
 type AuthState = {
@@ -30,6 +31,18 @@ export const signupUser = createAsyncThunk(
     try {
       const resp = await api.signup(payload);
       return resp;
+    } catch (err: unknown) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const fetchCurrentUser = createAsyncThunk(
+  "auth/fetchCurrentUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const u = await api.me();
+      return u;
     } catch (err: unknown) {
       return rejectWithValue(err);
     }
@@ -86,6 +99,18 @@ export const authSlice = createSlice({
           message = String(action.error.message);
         }
         state.error = message;
+      });
+    builder
+      .addCase(fetchCurrentUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload as User;
+      })
+      .addCase(fetchCurrentUser.rejected, (state) => {
+        state.status = "failed";
+        state.user = null;
       });
   },
 });

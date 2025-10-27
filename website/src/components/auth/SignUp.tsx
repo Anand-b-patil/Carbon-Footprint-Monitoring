@@ -1,20 +1,35 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Building } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { signupUser, setToken } from '@/lib/auth/authSlice';
 
 export default function SignUpForm() {
+  const [orgName, setOrgName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { status, error } = useAppSelector((state) => state.auth);
+  const isLoading = status === 'loading';
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
+
+    // Organization name validation
+    if (!orgName) {
+      newErrors.orgName = 'Organization name is required';
+    } else if (orgName.length < 2) {
+      newErrors.orgName = 'Organization name must be at least 2 characters';
+    }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -49,14 +64,49 @@ export default function SignUpForm() {
       return;
     }
 
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Sign up attempt:', { email, password });
-      setIsLoading(false);
-      // Add your sign up logic here
-    }, 1500);
+    try {
+      const result = await dispatch(signupUser({
+        org_name: orgName,
+        email,
+        password,
+      })).unwrap();
+      
+      // On successful signup, set token and redirect to dashboard
+      dispatch(setToken(result.access_token));
+      router.push('/dashboard');
+    } catch (err: any) {
+      // Log detailed error to console for debugging
+      console.error('Signup failed - Full error details:', {
+        error: err,
+        message: err.message,
+        status: err.status,
+        name: err.name,
+        stack: err.stack,
+        response: err.response,
+        request: err.request
+      });
+      
+      // Check if this is a network error (backend not running)
+      if (err.message?.includes('Network Error') || 
+          err.message?.includes('ECONNREFUSED') ||
+          err.message?.includes('fetch') ||
+          err.name === 'ConnectionError' ||
+          err.status === 404) {
+        console.error('🚨 BACKEND CONNECTION ERROR:');
+        console.error('- Backend server is not running on port 5000');
+        console.error('- Check if uvicorn is started in carbon-backend directory');
+        console.error('- Verify NEXT_PUBLIC_API_URL in .env.local');
+        
+        setErrors({
+          submit: '🚨 Backend Server Not Running - The Carbon Footprint API server is not accessible. Please start the backend server on port 5000 first.'
+        });
+      } else {
+        console.error('🚨 SIGNUP ERROR:', err.message || 'Unknown error');
+        setErrors({
+          submit: err.message || 'Signup failed. Please try again.'
+        });
+      }
+    }
   };
 
   return (
@@ -71,6 +121,31 @@ export default function SignUpForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Organization Name Field */}
+        <div>
+          <label htmlFor="orgName" className="block text-sm font-medium text-gray-300 mb-2">
+            Organization Name
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Building className="h-5 w-5 text-gray-500" />
+            </div>
+            <input
+              id="orgName"
+              type="text"
+              value={orgName}
+              onChange={(e) => setOrgName(e.target.value)}
+              placeholder="Your Company Name"
+              className={`w-full pl-10 pr-4 py-3 bg-gray-700/30 border ${
+                errors.orgName ? 'border-red-500' : 'border-gray-600'
+              } rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all`}
+            />
+          </div>
+          {errors.orgName && (
+            <p className="mt-1 text-sm text-red-400">{errors.orgName}</p>
+          )}
+        </div>
+
         {/* Email Address Field */}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
@@ -168,6 +243,20 @@ export default function SignUpForm() {
           )}
         </div>
 
+        {/* Show any Redux auth errors */}
+        {error && (
+          <div className="p-3 bg-red-900/50 border border-red-700 rounded-lg">
+            <p className="text-sm text-red-400">{error}</p>
+          </div>
+        )}
+
+        {/* Show form submission errors */}
+        {errors.submit && (
+          <div className="p-3 bg-red-900/50 border border-red-700 rounded-lg">
+            <p className="text-sm text-red-400 whitespace-pre-line">{errors.submit}</p>
+          </div>
+        )}
+
         {/* Submit Button */}
         <button
           type="submit"
@@ -183,7 +272,7 @@ export default function SignUpForm() {
             Already have an account?{' '}
           </span>
           <Link
-            href="/login"
+            href="/auth/login"
             className="text-sm text-emerald-500 hover:text-emerald-400 transition-colors font-medium"
           >
             Log In

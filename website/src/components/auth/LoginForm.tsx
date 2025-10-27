@@ -2,22 +2,70 @@
 
 import { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { setToken, fetchCurrentUser } from '@/lib/auth/authSlice';
+import { loginApi } from '@/lib/auth/api';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Login attempt:', { email, password });
+    try {
+      // Call backend login API
+      const result = await loginApi({ email, password });
+      
+      // Set token in Redux and localStorage
+      dispatch(setToken(result.access_token));
+      
+      // Fetch current user details
+      await dispatch(fetchCurrentUser()).unwrap();
+      
+      // Redirect to dashboard
+      router.push('/dashboard');
+    } catch (err: any) {
+      // Log detailed error to console for debugging
+      console.error('Login failed - Full error details:', {
+        error: err,
+        message: err.message,
+        status: err.status,
+        name: err.name,
+        stack: err.stack,
+        response: err.response,
+        request: err.request
+      });
+
+      // Check if this is a network error (backend not running)
+      if (err.message?.includes('Network Error') || 
+          err.message?.includes('ECONNREFUSED') ||
+          err.message?.includes('fetch') ||
+          err.name === 'ConnectionError' ||
+          err.status === 404) {
+        console.error('🚨 BACKEND CONNECTION ERROR:');
+        console.error('- Backend server is not running on port 5000');
+        console.error('- Check if uvicorn is started in carbon-backend directory');
+        console.error('- Verify NEXT_PUBLIC_API_URL in .env.local');
+        
+        setError('🚨 Backend Server Not Running - Please start the backend server first.');
+      } else {
+        console.error('🚨 LOGIN ERROR:', err.message || 'Unknown error');
+        setError('Invalid email or password. Please try again.');
+      }
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -85,6 +133,13 @@ export default function LoginForm() {
           </div>
         </div>
 
+        {/* Show login errors */}
+        {error && (
+          <div className="p-3 bg-red-900/50 border border-red-700 rounded-lg">
+            <p className="text-sm text-red-400">{error}</p>
+          </div>
+        )}
+
         {/* Forgot Password Link */}
         <div className="flex justify-end">
           <a
@@ -107,14 +162,14 @@ export default function LoginForm() {
         {/* Contact Support Link */}
         <div className="text-center">
           <span className="text-gray-400 text-sm">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
           </span>
-          <a
-            href="#"
+          <Link
+            href="/auth/signup"
             className="text-sm text-emerald-500 hover:text-emerald-400 transition-colors"
           >
-            Contact Support
-          </a>
+            Sign Up
+          </Link>
         </div>
       </form>
     </div>

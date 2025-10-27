@@ -2,8 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import UserTable from '@/components/UserManagement/UserTable';
-import SearchBar from '@/components/UserManagement/SearchBar';
+import UserTable from '@/ui/userManagement/Table';
+import SearchBar from '@/ui/userManagement/SearchBar';
 import { User } from '@/types/user';
 
 export default function UserManagementPage() {
@@ -68,20 +68,6 @@ export default function UserManagementPage() {
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <UserTable users={filteredUsers} totalUsers={32} />
       </div>
-    </div>
-  );
-}
-
-// app/layout.tsx or app/user-management/layout.tsx
-import Sidebar from '@/components/Layout/Sidebar';
-
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex min-h-screen bg-[#0a1a1a]">
-      <Sidebar />
-      <main className="flex-1">
-        {children}
-      </main>
     </div>
   );
 }

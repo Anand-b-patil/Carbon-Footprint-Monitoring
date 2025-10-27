@@ -1,6 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { getKpis } from '@/lib/analytics/api';
+import type { KpisResponse } from '@/lib/analytics/types';
 
 interface StatCard {
   title: string;
@@ -10,29 +13,75 @@ interface StatCard {
 }
 
 export default function StatsCards() {
+  const [kpis, setKpis] = useState<KpisResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchKpis = async () => {
+      try {
+        setLoading(true);
+        const data = await getKpis();
+        setKpis(data);
+      } catch (err) {
+        console.error('Failed to fetch KPIs:', err);
+        setError('Failed to load KPIs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchKpis();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, index) => (
+          <div
+            key={index}
+            className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 animate-pulse"
+          >
+            <div className="h-4 bg-gray-700 rounded mb-2"></div>
+            <div className="h-8 bg-gray-700 rounded mb-3"></div>
+            <div className="h-4 bg-gray-700 rounded w-2/3"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error || !kpis) {
+    return (
+      <div className="bg-red-900/50 border border-red-700 rounded-xl p-6">
+        <p className="text-red-400">Failed to load dashboard stats</p>
+      </div>
+    );
+  }
+
   const stats: StatCard[] = [
     {
       title: 'Total CO2e',
-      value: '1,234 t',
-      change: '2.1% vs last period',
+      value: `${(kpis.total_co2e_kg / 1000).toFixed(1)} t`,
+      change: 'Current period',
       isPositive: false,
     },
     {
-      title: 'Scope 1 / 2 / 3',
-      value: '300 / 650 / 284 t',
-      change: '1.5% vs last period',
+      title: 'Scope 1',
+      value: `${(kpis.scope1_kg / 1000).toFixed(1)} t`,
+      change: `${((kpis.scope1_kg / kpis.total_co2e_kg) * 100).toFixed(1)}% of total`,
       isPositive: true,
     },
     {
-      title: 'Active Facilities',
-      value: '12',
-      change: '0.8% vs last period',
+      title: 'Scope 2',
+      value: `${(kpis.scope2_kg / 1000).toFixed(1)} t`,
+      change: `${((kpis.scope2_kg / kpis.total_co2e_kg) * 100).toFixed(1)}% of total`,
       isPositive: true,
     },
     {
-      title: 'Last Activity',
-      value: 'Oct 26, 2023',
-      change: 'at 4:32 PM',
+      title: 'Scope 3',
+      value: `${(kpis.scope3_kg / 1000).toFixed(1)} t`,
+      change: `${((kpis.scope3_kg / kpis.total_co2e_kg) * 100).toFixed(1)}% of total`,
       isPositive: true,
     },
   ];
@@ -50,16 +99,10 @@ export default function StatsCards() {
           </div>
           <div
             className={`flex items-center gap-1 text-sm ${
-              stat.isPositive ? 'text-emerald-400' : 'text-red-400'
+              stat.isPositive ? 'text-emerald-400' : 'text-gray-400'
             }`}
           >
-            {index < 3 && (
-              stat.isPositive ? (
-                <TrendingUp className="w-4 h-4" />
-              ) : (
-                <TrendingDown className="w-4 h-4" />
-              )
-            )}
+            {index === 0 && <TrendingDown className="w-4 h-4" />}
             {stat.change}
           </div>
         </div>

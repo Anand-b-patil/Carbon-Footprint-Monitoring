@@ -58,7 +58,7 @@ export default function FacilitiesNavbar() {
             </button>
 
             {/* User Avatar */}
-            <button className="w-9 h-9 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 hover:opacity-90 transition-opacity">
+            <button className="w-9 h-9 rounded-full bg-linear-to-br from-gray-400 to-gray-500 hover:opacity-90 transition-opacity">
               <span className="sr-only">User menu</span>
             </button>
           </div>

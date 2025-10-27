@@ -14,7 +14,7 @@ export default function Sidebar() {
       {/* Admin Profile */}
       <div className="p-6 border-b border-[#2a4f4f]">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-white font-semibold">
+          <div className="w-12 h-12 rounded-full bg-linear-to-br from-amber-400 to-orange-600 flex items-center justify-center text-white font-semibold">
             AN
           </div>
           <div>

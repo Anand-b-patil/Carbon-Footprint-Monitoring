@@ -1,14 +1,65 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { getTrend } from '@/lib/analytics/api';
+import type { TrendPoint } from '@/lib/analytics/types';
 
 export default function EmissionsTrend() {
-  const data = [
-    { name: 'Week 1', value: 980 },
-    { name: 'Week 2', value: 1450 },
-    { name: 'Week 3', value: 1180 },
-    { name: 'Week 4', value: 1320 },
-  ];
+  const [trendData, setTrendData] = useState<TrendPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTrend = async () => {
+      try {
+        setLoading(true);
+        const data = await getTrend();
+        setTrendData(data);
+      } catch (err) {
+        console.error('Failed to fetch trend data:', err);
+        setError('Failed to load trend data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrend();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+        <div className="mb-6">
+          <div className="h-6 bg-gray-700 rounded mb-2 w-1/3"></div>
+          <div className="h-4 bg-gray-700 rounded w-1/4"></div>
+        </div>
+        <div className="h-[300px] bg-gray-700/30 rounded animate-pulse"></div>
+      </div>
+    );
+  }
+
+  if (error || trendData.length === 0) {
+    return (
+      <div className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold text-white mb-1">
+            Total Emissions Trend
+          </h3>
+          <p className="text-sm text-gray-400">Trend data</p>
+        </div>
+        <div className="h-[300px] flex items-center justify-center">
+          <p className="text-gray-500">No trend data available</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Convert kg to tonnes for display
+  const chartData = trendData.map(point => ({
+    name: point.period,
+    value: Math.round(point.co2e_kg / 1000 * 10) / 10, // Convert to tonnes with 1 decimal
+  }));
 
   return (
     <div className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
@@ -16,11 +67,11 @@ export default function EmissionsTrend() {
         <h3 className="text-xl font-semibold text-white mb-1">
           Total Emissions Trend
         </h3>
-        <p className="text-sm text-gray-400">Last 30 Days</p>
+        <p className="text-sm text-gray-400">Emissions over time (tonnes CO2e)</p>
       </div>
 
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
+        <BarChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
           <XAxis 
             dataKey="name" 
@@ -39,6 +90,7 @@ export default function EmissionsTrend() {
               color: '#fff',
             }}
             cursor={{ fill: 'rgba(16, 185, 129, 0.1)' }}
+            formatter={(value: number) => [`${value} t`, 'CO2e']}
           />
           <Bar 
             dataKey="value" 

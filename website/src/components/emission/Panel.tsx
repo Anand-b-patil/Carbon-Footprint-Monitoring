@@ -8,7 +8,7 @@ interface FilterPanelProps {
     geography: string;
     validOn: string;
   };
-  onFiltersChange: (filters: any) => void;
+  onFiltersChange: (filters: Record<string, unknown>) => void;
   onApply: () => void;
   onClear: () => void;
 }
@@ -124,7 +124,7 @@ export default function FilterPanel({
               value={filters.validOn}
               onChange={handleChange}
               placeholder="Select a date"
-              className="w-full px-4 py-2.5 bg-gray-800/80 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent [color-scheme:dark]"
+              className="w-full px-4 py-2.5 bg-gray-800/80 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent scheme-dark"
             />
             <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           </div>

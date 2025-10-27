@@ -17,11 +17,7 @@ export async function uploadCsv(file: File | Blob): Promise<IngestResponse> {
   try {
     const fd = new FormData();
     fd.append("file", file);
-    const res = await apiClient.post<IngestResponse>("/v1/ingest/upload-csv", fd, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const res = await apiClient.post<IngestResponse>("/v1/ingest/upload-csv", fd);
     return res.data;
   } catch (err) {
     throw categorizeAxiosError(err);

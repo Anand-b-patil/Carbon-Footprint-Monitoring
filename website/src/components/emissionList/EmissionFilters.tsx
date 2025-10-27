@@ -8,7 +8,7 @@ interface EmissionsFiltersProps {
     facility: string;
     dateRange: string;
   };
-  onFiltersChange: (filters: any) => void;
+  onFiltersChange: (filters: Record<string, unknown>) => void;
 }
 
 export default function EmissionsFilters({ filters, onFiltersChange }: EmissionsFiltersProps) {

@@ -140,7 +140,7 @@ export default function FacilitiesTable({ searchQuery }: FacilitiesTableProps) {
 
         <button
           onClick={() => handlePageChange(1)}
-          className={`min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors ${
+          className={`min-w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
             currentPage === 1
               ? 'bg-emerald-500 text-white'
               : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'
@@ -151,7 +151,7 @@ export default function FacilitiesTable({ searchQuery }: FacilitiesTableProps) {
 
         <button
           onClick={() => handlePageChange(2)}
-          className={`min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors ${
+          className={`min-w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
             currentPage === 2
               ? 'bg-emerald-500 text-white'
               : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'
@@ -162,7 +162,7 @@ export default function FacilitiesTable({ searchQuery }: FacilitiesTableProps) {
 
         <button
           onClick={() => handlePageChange(3)}
-          className={`min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors ${
+          className={`min-w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
             currentPage === 3
               ? 'bg-emerald-500 text-white'
               : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'
@@ -175,7 +175,7 @@ export default function FacilitiesTable({ searchQuery }: FacilitiesTableProps) {
 
         <button
           onClick={() => handlePageChange(10)}
-          className={`min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors ${
+          className={`min-w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
             currentPage === 10
               ? 'bg-emerald-500 text-white'
               : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'

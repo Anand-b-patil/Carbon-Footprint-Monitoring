@@ -2,8 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import AccountInformation from '@/components/Profile/AccountInformation';
-import LoadingStateExample from '@/components/Profile/LoadingStateExample';
+import AccountInformation from '@/components/profile/AccountInformation';
+import LoadingStateExample from '@/components/profile/LandingState';
 import { ProfileData } from '@/types/profile';
 
 export default function ProfilePage() {
@@ -28,20 +28,6 @@ export default function ProfilePage() {
           </>
         )}
       </div>
-    </div>
-  );
-}
-
-// app/profile/layout.tsx
-import ProfileSidebar from '@/components/Layout/ProfileSidebar';
-
-export default function ProfileLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex min-h-screen bg-[#0d1f1f]">
-      <ProfileSidebar />
-      <main className="flex-1">
-        {children}
-      </main>
     </div>
   );
 }

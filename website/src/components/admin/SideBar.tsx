@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { 
-  LayoutDashboard, 
-  Activity, 
+import {
+  LayoutDashboard,
+  Activity,
   BarChart3,
   ShieldCheck,
-  Settings
+  Settings,
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 
 export default function AdminSidebar() {
@@ -26,11 +27,14 @@ export default function AdminSidebar() {
       {/* User Profile */}
       <div className="p-6 border-b border-gray-800">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-500 to-gray-600 flex items-center justify-center overflow-hidden">
-            <img 
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" 
+          <div className="w-12 h-12 rounded-full bg-linear-to-br from-gray-500 to-gray-600 flex items-center justify-center overflow-hidden">
+            <Image
+              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin"
               alt="Admin User"
-              className="w-full h-full"
+              width={48}
+              height={48}
+              className="w-full h-full object-cover"
+              unoptimized
             />
           </div>
           <div>
