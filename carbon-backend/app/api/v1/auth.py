@@ -7,7 +7,7 @@ from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.security import create_access_token, hash_password, verify_password
+from app.core.security import hash_password, verify_password
 from app.core.auth import get_current_user
 from app.db.database import get_db
 from app.db.models import Organization, User
@@ -21,9 +21,8 @@ class SignupRequest(BaseModel):
     password: str = Field(min_length=8)
 
 
-class TokenResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
+class LoginSuccess(BaseModel):
+    user_id: int
 
 
 class LoginRequest(BaseModel):
@@ -38,7 +37,7 @@ class MeResponse(BaseModel):
     org: dict
 
 
-@router.post("/signup", response_model=TokenResponse)
+@router.post("/signup", response_model=LoginSuccess)
 def signup(payload: SignupRequest, db: Session = Depends(get_db)):
     # Create org if not exists
     existing_org = db.scalar(select(Organization).where(Organization.name == payload.org_name))
@@ -57,17 +56,15 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
     user = User(org_id=org.id, email=payload.email, password_hash=hash_password(payload.password), role="admin", is_active=True)
     db.add(user)
     db.flush()
-    token = create_access_token(str(user.id), {"org_id": org.id, "role": user.role})
-    return TokenResponse(access_token=token)
+    return LoginSuccess(user_id=user.id)
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login", response_model=LoginSuccess)
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
     user = db.scalar(select(User).where(User.email == payload.email))
     if not user or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    token = create_access_token(str(user.id), {"org_id": user.org_id, "role": user.role})
-    return TokenResponse(access_token=token)
+    return LoginSuccess(user_id=user.id)
 
 
 @router.get("/me", response_model=MeResponse)
