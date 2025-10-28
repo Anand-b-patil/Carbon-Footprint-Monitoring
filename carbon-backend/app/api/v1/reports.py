@@ -49,7 +49,19 @@ def stream_csv(rows):
         buffer.truncate(0)
 
 
-@router.get("/period")
+@router.get(
+    "/period",
+    responses={
+        200: {
+            "description": "CSV stream of emissions for a period",
+            "content": {
+                "text/csv": {
+                    "example": "emission_id,event_id,occurred_at,category,unit,value_numeric,scope,co2e_kg\n1,10,2024-01-01T00:00:00Z,Electricity,kWh,100,2,23.3\n"
+                }
+            },
+        }
+    },
+)
 def report_period(from_: str = Query(alias="from"), to: str = Query(), db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None):
     start = parse_dt(from_)
     end = parse_dt(to)

@@ -23,8 +23,39 @@ class KPIsOut(BaseModel):
     scope2_kg: float
     scope3_kg: float
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "total_co2e_kg": 12345.678,
+                    "scope1_kg": 2345.0,
+                    "scope2_kg": 3456.0,
+                    "scope3_kg": 6544.678,
+                }
+            ]
+        }
+    }
 
-@router.get("/kpis", response_model=KPIsOut)
+
+@router.get(
+    "/kpis",
+    response_model=KPIsOut,
+    responses={
+        200: {
+            "description": "Aggregate KPIs for a period",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "total_co2e_kg": 12345.678,
+                        "scope1_kg": 2345.0,
+                        "scope2_kg": 3456.0,
+                        "scope3_kg": 6544.678,
+                    }
+                }
+            },
+        }
+    },
+)
 def kpis(db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None, from_: str = Query(alias="from"), to: str = Query()):
     start = parse_dt(from_)
     end = parse_dt(to)
@@ -39,7 +70,24 @@ class TrendPoint(BaseModel):
     co2e_kg: float
 
 
-@router.get("/trend", response_model=list[TrendPoint])
+@router.get(
+    "/trend",
+    response_model=list[TrendPoint],
+    responses={
+        200: {
+            "description": "Emissions trend over time",
+            "content": {
+                "application/json": {
+                    "example": [
+                        {"period": "2024-01-01", "co2e_kg": 120.5},
+                        {"period": "2024-01-02", "co2e_kg": 98.2},
+                        {"period": "2024-01-03", "co2e_kg": 110.0},
+                    ]
+                }
+            },
+        }
+    },
+)
 def trend(
     db: Session = Depends(get_db),
     user: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None,
@@ -77,8 +125,45 @@ class SummaryOut(BaseModel):
     last_event_at: Optional[datetime]
     top_categories: list[tuple[str, float]]
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "total_co2e_kg": 12345.678,
+                    "scope1_kg": 2345.0,
+                    "scope2_kg": 3456.0,
+                    "scope3_kg": 6544.678,
+                    "facilities_count": 3,
+                    "last_event_at": "2024-08-10T12:34:56Z",
+                    "top_categories": [["Electricity", 5432.1], ["Fuel", 3210.0]],
+                }
+            ]
+        }
+    }
 
-@router.get("/summary", response_model=SummaryOut)
+
+@router.get(
+    "/summary",
+    response_model=SummaryOut,
+    responses={
+        200: {
+            "description": "Summary KPIs for dashboard",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "total_co2e_kg": 12345.678,
+                        "scope1_kg": 2345.0,
+                        "scope2_kg": 3456.0,
+                        "scope3_kg": 6544.678,
+                        "facilities_count": 3,
+                        "last_event_at": "2024-08-10T12:34:56Z",
+                        "top_categories": [["Electricity", 5432.1], ["Fuel", 3210.0]],
+                    }
+                }
+            },
+        }
+    },
+)
 def summary(db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None):
     totals_stmt = select(
         func.coalesce(func.sum(Emission.co2e_kg), 0),

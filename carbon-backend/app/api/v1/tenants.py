@@ -28,8 +28,27 @@ class FacilityOut(BaseModel):
     country: Optional[str]
     grid_region: Optional[str]
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"id": 1, "name": "HQ", "country": "US", "grid_region": "PJM"}
+            ]
+        }
+    }
 
-@router.post("/facilities", response_model=FacilityOut, status_code=201, dependencies=[Depends(require_role("admin"))])
+
+@router.post(
+    "/facilities",
+    response_model=FacilityOut,
+    status_code=201,
+    dependencies=[Depends(require_role("admin"))],
+    responses={
+        201: {
+            "description": "Create a facility",
+            "content": {"application/json": {"example": {"id": 1, "name": "HQ", "country": "US", "grid_region": "PJM"}}},
+        }
+    },
+)
 def create_facility(payload: FacilityCreate, db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("admin"))] = None):
     facility = Facility(org_id=user.org_id, name=payload.name, country=payload.country, grid_region=payload.grid_region)
     db.add(facility)
@@ -40,7 +59,16 @@ def create_facility(payload: FacilityCreate, db: Session = Depends(get_db), user
     return FacilityOut(id=facility.id, name=facility.name, country=facility.country, grid_region=facility.grid_region)
 
 
-@router.get("/facilities", response_model=list[FacilityOut])
+@router.get(
+    "/facilities",
+    response_model=list[FacilityOut],
+    responses={
+        200: {
+            "description": "List facilities",
+            "content": {"application/json": {"example": [{"id": 1, "name": "HQ", "country": "US", "grid_region": "PJM"}]}},
+        }
+    },
+)
 def list_facilities(db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None):
     rows = list(db.scalars(select(Facility).where(Facility.org_id == user.org_id).order_by(Facility.name)))
     return [FacilityOut(id=f.id, name=f.name, country=f.country, grid_region=f.grid_region) for f in rows]
@@ -58,8 +86,27 @@ class UserOut(BaseModel):
     role: str
     is_active: bool
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"id": 10, "email": "user@example.com", "role": "viewer", "is_active": True}
+            ]
+        }
+    }
 
-@router.post("/users", response_model=UserOut, status_code=201, dependencies=[Depends(require_role("admin"))])
+
+@router.post(
+    "/users",
+    response_model=UserOut,
+    status_code=201,
+    dependencies=[Depends(require_role("admin"))],
+    responses={
+        201: {
+            "description": "Create user in tenant",
+            "content": {"application/json": {"example": {"id": 10, "email": "user@example.com", "role": "viewer", "is_active": True}}},
+        }
+    },
+)
 def create_user(payload: UserCreate, db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("admin"))] = None):
     new_user = User(org_id=user.org_id, email=payload.email, password_hash=hash_password(payload.password), role=payload.role, is_active=True)
     db.add(new_user)
@@ -70,7 +117,19 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db), user: Annota
     return UserOut(id=new_user.id, email=new_user.email, role=new_user.role, is_active=new_user.is_active)
 
 
-@router.get("/users", response_model=list[UserOut], dependencies=[Depends(require_role("admin"))])
+@router.get(
+    "/users",
+    response_model=list[UserOut],
+    dependencies=[Depends(require_role("admin"))],
+    responses={
+        200: {
+            "description": "List tenant users",
+            "content": {"application/json": {"example": [
+                {"id": 10, "email": "user@example.com", "role": "viewer", "is_active": True}
+            ]}},
+        }
+    },
+)
 def list_users(db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("admin"))] = None):
     rows = list(db.scalars(select(User).where(User.org_id == user.org_id).order_by(User.email)))
     return [UserOut(id=u.id, email=u.email, role=u.role, is_active=u.is_active) for u in rows]

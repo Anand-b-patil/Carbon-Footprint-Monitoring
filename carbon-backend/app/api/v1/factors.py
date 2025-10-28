@@ -48,8 +48,55 @@ class FactorOut(BaseModel):
     valid_to: datetime
     version: int
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "id": 1,
+                    "namespace": "global",
+                    "category": "Electricity",
+                    "unit_in": "kWh",
+                    "unit_out": "kgCO2e",
+                    "factor_value": 0.233,
+                    "gwp_horizon": 100,
+                    "geography": "GLOBAL",
+                    "vendor": "IPCC",
+                    "method": "Default",
+                    "valid_from": "2024-01-01T00:00:00Z",
+                    "valid_to": "2025-01-01T00:00:00Z",
+                    "version": 1,
+                }
+            ]
+        }
+    }
 
-@router.post("", response_model=FactorOut, status_code=201, dependencies=[Depends(require_role("admin"))])
+
+@router.post(
+    "",
+    response_model=FactorOut,
+    status_code=201,
+    dependencies=[Depends(require_role("admin"))],
+    responses={
+        201: {
+            "description": "Create a new emission factor",
+            "content": {"application/json": {"example": {
+                "id": 1,
+                "namespace": "global",
+                "category": "Electricity",
+                "unit_in": "kWh",
+                "unit_out": "kgCO2e",
+                "factor_value": 0.233,
+                "gwp_horizon": 100,
+                "geography": "GLOBAL",
+                "vendor": "IPCC",
+                "method": "Default",
+                "valid_from": "2024-01-01T00:00:00Z",
+                "valid_to": "2025-01-01T00:00:00Z",
+                "version": 1
+            }}}
+        }
+    },
+)
 def create_factor(payload: FactorCreate, db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("admin"))] = None):
     vf = parse_dt(payload.valid_from)
     vt = parse_dt(payload.valid_to)
@@ -91,7 +138,32 @@ def create_factor(payload: FactorCreate, db: Session = Depends(get_db), user: An
     )
 
 
-@router.get("", response_model=list[FactorOut])
+@router.get(
+    "",
+    response_model=list[FactorOut],
+    responses={
+        200: {
+            "description": "List emission factors",
+            "content": {"application/json": {"example": [
+                {
+                    "id": 1,
+                    "namespace": "global",
+                    "category": "Electricity",
+                    "unit_in": "kWh",
+                    "unit_out": "kgCO2e",
+                    "factor_value": 0.233,
+                    "gwp_horizon": 100,
+                    "geography": "GLOBAL",
+                    "vendor": "IPCC",
+                    "method": "Default",
+                    "valid_from": "2024-01-01T00:00:00Z",
+                    "valid_to": "2025-01-01T00:00:00Z",
+                    "version": 1
+                }
+            ]}}
+        }
+    },
+)
 def list_factors(
     db: Session = Depends(get_db),
     _: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None,
@@ -146,7 +218,22 @@ class PreviewOut(BaseModel):
     factor_value: float
 
 
-@router.get("/preview", response_model=PreviewOut)
+@router.get(
+    "/preview",
+    response_model=PreviewOut,
+    responses={
+        200: {
+            "description": "Preview best matching factor",
+            "content": {"application/json": {"example": {
+                "id": 1,
+                "category": "Electricity",
+                "geography": "GLOBAL",
+                "version": 1,
+                "factor_value": 0.233
+            }}}
+        }
+    },
+)
 def preview(category: str, occurred_at: str, geography: Optional[str] = None, db: Session = Depends(get_db), _: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None):
     ts = parse_dt(occurred_at)
     fac = select_best_factor(db, category=category, occurred_at=ts, geography=geography)
