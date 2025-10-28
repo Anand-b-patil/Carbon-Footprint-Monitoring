@@ -26,47 +26,8 @@ class EmissionOut(BaseModel):
     occurred_at: datetime
     category: str
 
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {
-                    "id": 101,
-                    "event_id": 55,
-                    "factor_id": 7,
-                    "scope": "2",
-                    "co2e_kg": 12.345,
-                    "occurred_at": "2024-01-15T10:00:00Z",
-                    "category": "Electricity",
-                }
-            ]
-        }
-    }
 
-
-@router.get(
-    "",
-    response_model=list[EmissionOut],
-    responses={
-        200: {
-            "description": "List computed emissions",
-            "content": {
-                "application/json": {
-                    "example": [
-                        {
-                            "id": 101,
-                            "event_id": 55,
-                            "factor_id": 7,
-                            "scope": "2",
-                            "co2e_kg": 12.345,
-                            "occurred_at": "2024-01-15T10:00:00Z",
-                            "category": "Electricity",
-                        }
-                    ]
-                }
-            },
-        }
-    },
-)
+@router.get("", response_model=list[EmissionOut])
 def list_emissions(
     db: Session = Depends(get_db),
     user: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None,
@@ -116,26 +77,8 @@ class RecomputeRequest(BaseModel):
 class RecomputeResponse(BaseModel):
     recalculated_events: int
 
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {"recalculated_events": 42}
-            ]
-        }
-    }
 
-
-@router.post(
-    "/recompute",
-    response_model=RecomputeResponse,
-    dependencies=[Depends(require_role("admin"))],
-    responses={
-        200: {
-            "description": "Trigger recalculation for events",
-            "content": {"application/json": {"example": {"recalculated_events": 42}}},
-        }
-    },
-)
+@router.post("/recompute", response_model=RecomputeResponse, dependencies=[Depends(require_role("admin"))])
 def recompute(payload: RecomputeRequest, db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("admin"))] = None):
     stmt = select(ActivityEvent.id).where(ActivityEvent.org_id == user.org_id)
     if payload.since:

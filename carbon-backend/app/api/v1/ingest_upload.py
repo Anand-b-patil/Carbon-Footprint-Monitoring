@@ -23,26 +23,8 @@ class UploadResponse(BaseModel):
     skipped_duplicates: int
     created_emissions: int
 
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {"created_events": 100, "skipped_duplicates": 5, "created_emissions": 100}
-            ]
-        }
-    }
 
-
-@router.post(
-    "/upload-csv",
-    response_model=UploadResponse,
-    dependencies=[Depends(require_role("analyst", "admin"))],
-    responses={
-        200: {
-            "description": "Bulk CSV upload of activity events",
-            "content": {"application/json": {"example": {"created_events": 100, "skipped_duplicates": 5, "created_emissions": 100}}},
-        }
-    },
-)
+@router.post("/upload-csv", response_model=UploadResponse, dependencies=[Depends(require_role("analyst", "admin"))])
 async def upload_csv(file: UploadFile = File(...), db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None):
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only CSV files are accepted")

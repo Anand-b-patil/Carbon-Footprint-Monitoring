@@ -48,34 +48,8 @@ class IngestResponse(BaseModel):
     skipped_duplicates: int
     created_emissions: int
 
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {
-                    "created_events": 10,
-                    "skipped_duplicates": 2,
-                    "created_emissions": 10,
-                }
-            ]
-        }
-    }
 
-
-@router.post(
-    "/events",
-    response_model=IngestResponse,
-    dependencies=[Depends(require_role("analyst", "admin"))],
-    responses={
-        200: {
-            "description": "Ingest activity events",
-            "content": {
-                "application/json": {
-                    "example": {"created_events": 10, "skipped_duplicates": 2, "created_emissions": 10}
-                }
-            },
-        }
-    },
-)
+@router.post("/events", response_model=IngestResponse, dependencies=[Depends(require_role("analyst", "admin"))])
 def ingest_events(payload: IngestRequest, db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None):
     if not payload.events:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No events provided")
