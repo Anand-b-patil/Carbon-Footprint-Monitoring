@@ -8,11 +8,7 @@ data class EventRequest(
     val category: String,
     val unit: String,
     val value_numeric: Double,
-    val facility_id: Int? = null,
-    val source_id: String? = null,
-    val subcategory: String? = null,
-    val currency: String? = null,
-    val spend_value: Double? = null
+    val facility_id: Int? = null
 )
 
 @Serializable

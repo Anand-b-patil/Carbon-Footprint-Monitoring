@@ -7,7 +7,16 @@ import com.nutrino.carbonfootprint.data.state.ResultState
 import kotlinx.coroutines.flow.Flow
 
 interface AnalyticsRepository {
-    suspend fun getKpis(from: String, to: String): Flow<ResultState<KpisResponse>>
-    suspend fun getTrend(grain: String, from: String, to: String): Flow<ResultState<List<TrendResponse>>>
+    suspend fun getKpis(
+        from: String? = null,
+        to: String? = null
+    ): Flow<ResultState<KpisResponse>>
+
+    suspend fun getTrend(
+        from: String? = null,
+        to: String? = null,
+        grain: String? = null
+    ): Flow<ResultState<TrendResponse>>
+
     suspend fun getSummary(): Flow<ResultState<SummaryResponse>>
 }

@@ -10,12 +10,11 @@ import com.nutrino.carbonfootprint.domain.repository.FacilityRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -28,12 +27,29 @@ class FacilityRepositoryImpl @Inject constructor(
     override suspend fun getFacilities(): Flow<ResultState<List<FacilityResponse>>> = flow {
         emit(ResultState.Loading)
         try {
-            val token = userPrefrence.acessToken.first()
-            val response = httpClient.get(Constants.BASE_URL + Constants.FACILITIES) {
-                header(HttpHeaders.Authorization, "Bearer $token")
-            }.body<List<FacilityResponse>>()
+            val userId = userPrefrence.userId.first()
+            if (userId == null) {
+                emit(ResultState.Error("User not logged in"))
+                return@flow
+            }
 
-            emit(ResultState.Success(response))
+            val httpResponse = httpClient.get(Constants.BASE_URL + Constants.FACILITIES)
+
+            if (httpResponse.status.isSuccess()) {
+                val response = httpResponse.body<List<FacilityResponse>>()
+                emit(ResultState.Success(response))
+            } else {
+                val errorBody = try {
+                    httpResponse.body<String>()
+                } catch (e: Exception) {
+                    "HTTP ${httpResponse.status.value}"
+                }
+                debugLogs(
+                    constant = Constants.BASE_URL + Constants.FACILITIES,
+                    e = Exception("HTTP ${httpResponse.status.value}: $errorBody")
+                )
+                emit(ResultState.Error("Server error: ${httpResponse.status.value} - $errorBody"))
+            }
 
         } catch (e: Exception){
             debugLogs(
@@ -47,14 +63,38 @@ class FacilityRepositoryImpl @Inject constructor(
     override suspend fun createFacility(createFacilityRequest: CreateFacilityRequest): Flow<ResultState<FacilityResponse>> = flow {
         emit(ResultState.Loading)
         try {
-            val token = userPrefrence.acessToken.first()
-            val response = httpClient.post(Constants.BASE_URL + Constants.FACILITIES) {
-                header(HttpHeaders.Authorization, "Bearer $token")
+            val userId = userPrefrence.userId.first()
+            if (userId == null) {
+                emit(ResultState.Error("User not logged in"))
+                return@flow
+            }
+
+            val userRole = userPrefrence.userRole.first()
+            if (userRole != "admin") {
+                emit(ResultState.Error("Only admins can create facilities"))
+                return@flow
+            }
+
+            val httpResponse = httpClient.post(Constants.BASE_URL + Constants.FACILITIES) {
                 contentType(ContentType.Application.Json)
                 setBody(createFacilityRequest)
-            }.body<FacilityResponse>()
+            }
 
-            emit(ResultState.Success(response))
+            if (httpResponse.status.isSuccess()) {
+                val response = httpResponse.body<FacilityResponse>()
+                emit(ResultState.Success(response))
+            } else {
+                val errorBody = try {
+                    httpResponse.body<String>()
+                } catch (e: Exception) {
+                    "HTTP ${httpResponse.status.value}"
+                }
+                debugLogs(
+                    constant = Constants.BASE_URL + Constants.FACILITIES,
+                    e = Exception("HTTP ${httpResponse.status.value}: $errorBody")
+                )
+                emit(ResultState.Error("Server error: ${httpResponse.status.value} - $errorBody"))
+            }
 
         } catch (e: Exception){
             debugLogs(
