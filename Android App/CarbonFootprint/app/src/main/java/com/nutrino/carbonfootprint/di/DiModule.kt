@@ -4,13 +4,19 @@ import android.content.Context
 import com.nutrino.carbonfootprint.data.local.UserPrefrence
 import com.nutrino.carbonfootprint.data.repoImpl.AnalyticsRepositoryImpl
 import com.nutrino.carbonfootprint.data.repoImpl.AuthRepositoryImpl
+import com.nutrino.carbonfootprint.data.repoImpl.EmissionsRepositoryImpl
 import com.nutrino.carbonfootprint.data.repoImpl.FacilityRepositoryImpl
+import com.nutrino.carbonfootprint.data.repoImpl.FactorsRepositoryImpl
 import com.nutrino.carbonfootprint.data.repoImpl.IngestionRepositoryImpl
+import com.nutrino.carbonfootprint.data.repoImpl.ReportsRepositoryImpl
 import com.nutrino.carbonfootprint.data.repoImpl.UserRepositoryImpl
 import com.nutrino.carbonfootprint.domain.repository.AnalyticsRepository
 import com.nutrino.carbonfootprint.domain.repository.AuthRepository
+import com.nutrino.carbonfootprint.domain.repository.EmissionsRepository
 import com.nutrino.carbonfootprint.domain.repository.FacilityRepository
+import com.nutrino.carbonfootprint.domain.repository.FactorsRepository
 import com.nutrino.carbonfootprint.domain.repository.IngestionRepository
+import com.nutrino.carbonfootprint.domain.repository.ReportsRepository
 import com.nutrino.carbonfootprint.domain.repository.UserRepository
 import com.nutrino.carbonfootprint.domain.usecase.CreateFacilityUseCase
 import com.nutrino.carbonfootprint.domain.usecase.GetFacilitiesUseCase
@@ -132,6 +138,22 @@ object DiModule {
     @Provides
     fun provideIngestionRepository(httpClient: HttpClient, userPrefrence: UserPrefrence): IngestionRepository{
         return IngestionRepositoryImpl(httpClient = httpClient, userPrefrence = userPrefrence)
+    }
+
+
+    @Provides
+    fun provideFactorsRepository(httpClient: HttpClient, userPrefrence: UserPrefrence): FactorsRepository{
+        return FactorsRepositoryImpl(httpClient = httpClient, userPrefrence = userPrefrence)
+    }
+
+    @Provides
+    fun provideEmissionsRepository(httpClient: HttpClient, userPrefrence: UserPrefrence): EmissionsRepository{
+        return EmissionsRepositoryImpl(httpClient = httpClient, userPrefrence = userPrefrence)
+    }
+
+    @Provides
+    fun provideReportsRepository(httpClient: HttpClient, userPrefrence: UserPrefrence): ReportsRepository{
+        return ReportsRepositoryImpl(httpClient = httpClient, userPrefrence = userPrefrence)
     }
 
 }

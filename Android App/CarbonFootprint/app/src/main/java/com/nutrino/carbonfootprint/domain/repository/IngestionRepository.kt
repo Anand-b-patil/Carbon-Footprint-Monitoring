@@ -4,8 +4,9 @@ import com.nutrino.carbonfootprint.data.remote.ingestion.IngestEventsRequest
 import com.nutrino.carbonfootprint.data.remote.ingestion.IngestEventsResponse
 import com.nutrino.carbonfootprint.data.state.ResultState
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface IngestionRepository {
-    suspend fun ingestEvents(ingestEventsRequest: IngestEventsRequest): Flow<ResultState<IngestEventsResponse>>
-    suspend fun uploadCsv(csvFile: ByteArray): Flow<ResultState<IngestEventsResponse>>
+    suspend fun ingestEvents(eventsRequest: IngestEventsRequest): Flow<ResultState<IngestEventsResponse>>
+    suspend fun uploadCsv(csvFile: File): Flow<ResultState<IngestEventsResponse>>
 }

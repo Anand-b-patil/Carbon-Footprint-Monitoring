@@ -11,6 +11,6 @@ class IngestEventsUseCase @Inject constructor(
     private val ingestionRepository: IngestionRepository
 ) {
     suspend operator fun invoke(ingestEventsRequest: IngestEventsRequest): Flow<ResultState<IngestEventsResponse>> {
-        return ingestionRepository.ingestEvents(ingestEventsRequest = ingestEventsRequest)
+        return ingestionRepository.ingestEvents(eventsRequest = ingestEventsRequest)
     }
 }
