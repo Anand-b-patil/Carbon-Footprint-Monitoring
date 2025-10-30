@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { fetchUsers, createUser } from "@/lib/tenants/api";
-import type { TenantUser } from "@/lib/tenants/types";
+import type { TenantUser } from "@/types/tenants/tenantstypes";
 
 export default function TenantUsersPage() {
   const [items, setItems] = useState<TenantUser[]>([]);

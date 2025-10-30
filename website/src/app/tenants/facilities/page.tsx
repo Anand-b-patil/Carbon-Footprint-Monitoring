@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { fetchFacilities, createFacility } from "@/lib/tenants/api";
-import type { Facility } from "@/lib/tenants/types";
+import type { Facility } from "@/types/tenants/tenantstypes";
 
 export default function FacilitiesPage() {
   const [items, setItems] = useState<Facility[]>([]);

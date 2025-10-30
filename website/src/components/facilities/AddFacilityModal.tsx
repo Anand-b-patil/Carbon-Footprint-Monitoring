@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { createFacility } from '@/lib/tenants/api';
-import type { CreateFacilityRequest } from '@/lib/tenants/types';
+import type { CreateFacilityRequest } from '@/types/tenants/tenantstypes';
 
 interface FormData {
 	facilityName: string;

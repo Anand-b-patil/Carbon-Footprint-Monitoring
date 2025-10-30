@@ -1,5 +1,5 @@
 // components/UserManagement/UserRow.tsx
-import { User } from '@/types/user';
+import { User } from '@/types/auth/user';
 import { MoreVertical } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import RoleBadge from './RoleBadge';

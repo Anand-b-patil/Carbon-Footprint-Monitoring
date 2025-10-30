@@ -13,7 +13,10 @@ export default function ReportPeriodPage() {
     setLoading(true);
     setError(null);
     try {
-      const p = await getReportPeriod();
+      // Use a default date range for the report - last 30 days
+      const to = new Date().toISOString().split('T')[0];
+      const from = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const p = await getReportPeriod(from, to);
       setPeriod(p);
     } catch (err) {
       console.error('Report period error:', err);
@@ -43,9 +46,9 @@ export default function ReportPeriodPage() {
                 <FileText className="w-8 h-8 text-emerald-400" />
               </div>
               
-              <h2 className="text-2xl font-bold text-white mb-4">Current Reporting Period</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">Emissions Report</h2>
               <p className="text-gray-400 mb-8">
-                Click below to fetch the current reporting period configuration from the system.
+                Generate a CSV report of emissions data for a specific date range.
               </p>
 
               {/* Action Button */}
@@ -55,7 +58,7 @@ export default function ReportPeriodPage() {
                 className="flex items-center justify-center gap-3 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 text-white font-semibold rounded-lg transition-colors mx-auto mb-8"
               >
                 <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
-                {loading ? 'Fetching...' : 'Get Current Period'}
+                {loading ? 'Generating Report...' : 'Generate CSV Report'}
               </button>
 
               {/* Error Message */}
@@ -69,18 +72,18 @@ export default function ReportPeriodPage() {
                 </div>
               )}
 
-              {/* Period Result */}
+              {/* Period Result - Now shows CSV data */}
               {period && (
                 <div className="bg-emerald-900/30 border border-emerald-700/50 rounded-lg p-6">
                   <div className="flex items-center justify-center gap-3 mb-4">
                     <Clock className="w-6 h-6 text-emerald-400" />
-                    <h3 className="text-lg font-semibold text-emerald-300">Active Period</h3>
+                    <h3 className="text-lg font-semibold text-emerald-300">Report Generated</h3>
                   </div>
-                  <div className="text-2xl font-bold text-white bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-                    {period}
+                  <div className="text-sm font-mono text-white bg-gray-800/50 rounded-lg p-4 border border-gray-700 max-h-64 overflow-auto">
+                    <pre>{period}</pre>
                   </div>
                   <p className="text-emerald-400 text-sm mt-2">
-                    This is the current reporting period used for emissions calculations and reports.
+                    CSV report containing emissions data for the specified date range.
                   </p>
                 </div>
               )}
@@ -88,10 +91,10 @@ export default function ReportPeriodPage() {
               {/* Help Text */}
               {!period && !loading && !error && (
                 <div className="bg-blue-900/30 border border-blue-700/50 rounded-lg p-4 text-left">
-                  <h4 className="text-blue-300 font-medium mb-2">About Reporting Periods</h4>
+                  <h4 className="text-blue-300 font-medium mb-2">About CSV Reports</h4>
                   <p className="text-blue-400 text-sm">
-                    The reporting period defines the timeframe used for emissions calculations and compliance reporting. 
-                    This configuration affects how data is aggregated and presented in your reports.
+                    Generate detailed emissions reports in CSV format containing: emission_id, event_id, 
+                    occurred_at, category, unit, value_numeric, scope, and co2e_kg for the specified date range.
                   </p>
                 </div>
               )}

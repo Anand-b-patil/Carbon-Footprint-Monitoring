@@ -1,5 +1,5 @@
 // components/UserManagement/StatusBadge.tsx
-import { UserStatus } from '@/types/user';
+import { UserStatus } from '@/types/auth/user';
 
 interface StatusBadgeProps {
   status: UserStatus;

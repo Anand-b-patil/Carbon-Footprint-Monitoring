@@ -4,7 +4,7 @@ import { useState } from 'react';
 import FileDropzone from '@/components/upload/FileDropzone';
 import AlternativeStates from '@/components/upload/AlternativeStates';
 import { uploadCsv } from '@/lib/ingest/api';
-import type { IngestResponse } from '@/lib/ingest/types';
+import type { IngestResponse } from '@/types/ingest/ingesttypes';
 
 export default function UploadActivityContent() {
   const [uploadState, setUploadState] = useState<'idle' | 'ready' | 'uploading' | 'complete' | 'error'>('idle');

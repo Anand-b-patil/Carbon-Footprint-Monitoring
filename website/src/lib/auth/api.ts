@@ -16,11 +16,14 @@ export type MeResponse = {
     id: number;
     email: string;
     role: string;
-    org_id: number;
-    is_active: boolean;
+    org: {
+        id: number;
+        name: string;
+        plan: string;
+    };
 };
 
-export async function signup(data:SignupRequest){
+export async function signup(data:SignupRequest): Promise<TokenResponse>{
     try {
         const response = await apiClient.post<TokenResponse>("/v1/auth/signup", data);
         return response.data;
@@ -39,7 +42,7 @@ export function login(token:string){
 }
 
 /** Call backend login endpoint and return token response */
-export async function loginApi(credentials: { email: string; password: string }) {
+export async function loginApi(credentials: { email: string; password: string }): Promise<TokenResponse> {
     try {
         const res = await apiClient.post<TokenResponse>("/v1/auth/login", credentials);
         return res.data;

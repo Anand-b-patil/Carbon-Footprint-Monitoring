@@ -1,5 +1,5 @@
 // components/UserManagement/RoleBadge.tsx
-import { UserRole } from '@/types/user';
+import { UserRole } from '@/types/auth/user';
 
 interface RoleBadgeProps {
   role: UserRole;

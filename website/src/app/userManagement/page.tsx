@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import UserTable from '@/ui/userManagement/Table';
 import SearchBar from '@/ui/userManagement/SearchBar';
-import { User } from '@/types/user';
+import { User } from '@/types/auth/user';
 
 export default function UserManagementPage() {
   const [searchQuery, setSearchQuery] = useState('');

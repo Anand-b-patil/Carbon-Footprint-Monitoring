@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { ingestEvents, uploadCsv } from "@/lib/ingest/api";
-import type { IngestResponse } from "@/lib/ingest/types";
+import type { IngestResponse } from "@/types/ingest/ingesttypes";
 import { Upload, FileText, Send, AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function IngestPage() {

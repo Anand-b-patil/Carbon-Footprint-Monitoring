@@ -1,14 +1,14 @@
 export type Facility = {
   id: number;
   name: string;
-  country: string;
-  grid_region: string;
+  country?: string;
+  grid_region?: string;
 };
 
 export type CreateFacilityRequest = {
   name: string;
-  country: string;
-  grid_region: string;
+  country?: string;
+  grid_region?: string;
 };
 
 export type TenantUser = {

@@ -1,6 +1,6 @@
 // components/UserManagement/UserTable.tsx
 import { useState } from 'react';
-import { User } from '@/types/user';
+import { User } from '@/types/auth/user';
 import UserRow from './UserRow';
 
 interface UserTableProps {
