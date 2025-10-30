@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import { getKpis } from '@/lib/analytics/api';
-import type { KpisResponse } from '@/lib/analytics/types';
+import type { KpisResponse } from '@/types/analytics/analyticstypes';
 
 interface StatCard {
   title: string;
@@ -21,7 +21,10 @@ export default function StatsCards() {
     const fetchKpis = async () => {
       try {
         setLoading(true);
-        const data = await getKpis();
+        // Use a default date range for now - last 30 days
+        const to = new Date().toISOString().split('T')[0];
+        const from = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        const data = await getKpis(from, to);
         setKpis(data);
       } catch (err) {
         console.error('Failed to fetch KPIs:', err);

@@ -7,8 +7,11 @@ export type User = {
   id: number;
   email: string;
   role: string;
-  org_id: number;
-  is_active: boolean;
+  org: {
+    id: number;
+    name: string;
+    plan: string;
+  };
 };
 
 type AuthState = {

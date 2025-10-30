@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios/apiClient";
 import { categorizeAxiosError } from "@/lib/errors";
-import type { HealthResponse } from "./types";
+import type { HealthResponse } from "../../types/heath/heathtypes";
 
 export async function getHealth(): Promise<HealthResponse> {
   try {

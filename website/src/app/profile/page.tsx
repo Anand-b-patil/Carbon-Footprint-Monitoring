@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import AccountInformation from '@/components/profile/AccountInformation';
 import LoadingStateExample from '@/components/profile/LandingState';
-import { ProfileData } from '@/types/profile';
+import { ProfileData } from '@/types/auth/profile';
 
 export default function ProfilePage() {
   const [isLoading] = useState(false);

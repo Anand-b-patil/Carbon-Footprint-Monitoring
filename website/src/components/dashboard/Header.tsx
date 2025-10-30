@@ -103,7 +103,7 @@ export default function DashboardHeader() {
                 <div className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50">
                   <div className="p-4 border-b border-gray-700">
                     <p className="text-white font-medium">{user?.email}</p>
-                    <p className="text-gray-400 text-sm capitalize">{user?.role} • Org ID: {user?.org_id}</p>
+                    <p className="text-gray-400 text-sm capitalize">{user?.role} • {user?.org?.name}</p>
                   </div>
                   <div className="p-2">
                     <button

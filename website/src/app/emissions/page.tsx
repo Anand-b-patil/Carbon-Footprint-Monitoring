@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { listEmissions, recomputeEmissions } from "@/lib/emissions/api";
-import type { Emission } from "@/lib/emissions/types";
+import type { Emission } from "@/types/emission/emissiontypes";
 
 export default function EmissionsPage() {
   const [items, setItems] = useState<Emission[]>([]);

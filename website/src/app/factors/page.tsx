@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { listFactors, createFactor } from "@/lib/factors/api";
-import type { Factor, CreateFactorRequest } from "@/lib/factors/types";
+import type { Factor, CreateFactorRequest } from "@/types/factors/factorstypes";
 
 export default function FactorsPage() {
   const [items, setItems] = useState<Factor[]>([]);

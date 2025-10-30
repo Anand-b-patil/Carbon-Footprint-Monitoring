@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { getTrend } from '@/lib/analytics/api';
-import type { TrendPoint } from '@/lib/analytics/types';
+import type { TrendPoint } from '@/types/analytics/analyticstypes';
 
 export default function EmissionsTrend() {
   const [trendData, setTrendData] = useState<TrendPoint[]>([]);
@@ -14,7 +14,10 @@ export default function EmissionsTrend() {
     const fetchTrend = async () => {
       try {
         setLoading(true);
-        const data = await getTrend();
+        // Use a default date range for now - last 30 days
+        const to = new Date().toISOString().split('T')[0];
+        const from = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        const data = await getTrend(from, to, 'day');
         setTrendData(data);
       } catch (err) {
         console.error('Failed to fetch trend data:', err);

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { getKpis, getTrend, getSummary } from "@/lib/analytics/api";
-import type { KpisResponse, TrendPoint, SummaryResponse } from "@/lib/analytics/types";
+import type { KpisResponse, TrendPoint, SummaryResponse } from "@/types/analytics/analyticstypes";
 import { 
   BarChart, 
   Bar, 

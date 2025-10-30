@@ -1,6 +1,6 @@
 // components/Profile/AccountInformation.tsx
 import { LogOut } from 'lucide-react';
-import { ProfileData } from '@/types/profile';
+import { ProfileData } from '@/types/auth/profile';
 import InfoRow from './InfoRow';
 
 interface AccountInformationProps {

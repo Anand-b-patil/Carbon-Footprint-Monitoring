@@ -4,13 +4,13 @@ export type CreateFactorRequest = {
   unit_in: string;
   unit_out: string;
   factor_value: number;
-  gwp_horizon?: number;
-  geography?: string;
-  vendor?: string;
-  method?: string;
-  valid_from?: string;
-  valid_to?: string;
-  version?: number;
+  gwp_horizon?: number; // default 100
+  geography?: string; // default 'GLOBAL'
+  vendor: string;
+  method: string;
+  valid_from: string; // ISO-8601
+  valid_to: string; // ISO-8601
+  version?: number; // default 1
 };
 
 export type Factor = {

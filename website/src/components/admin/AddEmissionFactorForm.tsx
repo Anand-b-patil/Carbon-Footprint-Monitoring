@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CheckCircle, X, AlertCircle } from 'lucide-react';
 import { createFactor } from '@/lib/factors/api';
-import type { CreateFactorRequest } from '@/lib/factors/types';
+import type { CreateFactorRequest } from '@/types/factors/factorstypes';
 
 interface FormData {
   category: string;
