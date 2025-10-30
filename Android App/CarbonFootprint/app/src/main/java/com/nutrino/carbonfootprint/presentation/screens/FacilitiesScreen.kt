@@ -262,8 +262,8 @@ private fun CreateFacilityDialog(
                     onCreateFacility(
                         CreateFacilityRequest(
                             name = name.trim(),
-                            country = if (country.isNotBlank()) country.trim() else null,
-                            grid_region = if (gridRegion.isNotBlank()) gridRegion.trim() else null
+                            country = if (country.isNotBlank()) country.trim() else "Unknown",
+                            grid_region = if (gridRegion.isNotBlank()) gridRegion.trim() else "Unknown"
                         )
                     )
                 },

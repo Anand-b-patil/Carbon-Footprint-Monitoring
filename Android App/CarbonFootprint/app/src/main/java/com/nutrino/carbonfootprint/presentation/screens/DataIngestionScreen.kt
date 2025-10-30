@@ -30,7 +30,6 @@ fun DataIngestionScreen(
     var category by remember { mutableStateOf("") }
     var unit by remember { mutableStateOf("") }
     var valueNumeric by remember { mutableStateOf("") }
-    var subcategory by remember { mutableStateOf("") }
     var occurredAt by remember { mutableStateOf(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)) }
 
     // Form validation states
@@ -46,7 +45,6 @@ fun DataIngestionScreen(
                 category = ""
                 unit = ""
                 valueNumeric = ""
-                subcategory = ""
                 occurredAt = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
             }
             else -> {}
@@ -94,16 +92,6 @@ fun DataIngestionScreen(
                     supportingText = if (categoryError.isNotEmpty()) {
                         { Text(categoryError, color = MaterialTheme.colorScheme.error) }
                     } else null,
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
-                )
-
-                // Subcategory Field
-                OutlinedTextField(
-                    value = subcategory,
-                    onValueChange = { subcategory = it },
-                    label = { Text("Subcategory (Optional)") },
-                    placeholder = { Text("e.g., renewable, fossil") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -240,7 +228,7 @@ fun DataIngestionScreen(
                                 category = category.trim(),
                                 unit = unit.trim(),
                                 value_numeric = valueNumeric.toDouble(),
-                                subcategory = if (subcategory.isNotBlank()) subcategory.trim() else null
+                                facility_id = null
                             )
 
                             ingestionViewmodel.ingestEvents(
