@@ -2,6 +2,7 @@ package com.nutrino.carbonfootprint.presentation.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -127,9 +128,9 @@ fun SignInScreen(
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
                         imageVector = if (passwordVisible)
-                            androidx.compose.material.icons.Icons.Default.Visibility
+                            Icons.Default.Visibility
                         else
-                            androidx.compose.material.icons.Icons.Default.VisibilityOff,
+                            Icons.Default.VisibilityOff,
                         contentDescription = if (passwordVisible) "Hide password" else "Show password"
                     )
                 }
@@ -200,7 +201,7 @@ fun SignInScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Navigate to SignUp
+        // Navigate to Sign Up
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically

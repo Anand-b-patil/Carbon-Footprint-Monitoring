@@ -128,7 +128,7 @@ fun ProfileScreen(
                 // Logout Button
                 OutlinedButton(
                     onClick = {
-                        userPreferenceViewModel.clearToken()
+                        userPreferenceViewModel.clearAllData()
                         onLogout()
                     },
                     modifier = Modifier.fillMaxWidth(),

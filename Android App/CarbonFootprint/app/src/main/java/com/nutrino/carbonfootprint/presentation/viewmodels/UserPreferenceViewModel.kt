@@ -30,7 +30,7 @@ class UserPreferenceViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // Wait for access token to emit its first value
-            userPrefrence.acessToken.first()
+            userPrefrence.accessToken.first()
             _isInitialized.value = true
         }
 
@@ -41,7 +41,7 @@ class UserPreferenceViewModel @Inject constructor(
     // --- Collect access token flow ---
     private fun observeAccessToken() {
         viewModelScope.launch {
-            userPrefrence.acessToken.collect { token ->
+            userPrefrence.accessToken.collect { token ->
                 _accessToken.value = token
                 _isLoggedIn.value = !token.isNullOrEmpty()
             }
@@ -51,12 +51,12 @@ class UserPreferenceViewModel @Inject constructor(
     // --- Update access token ---
     fun updateAccessToken(newToken: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            userPrefrence.updateAcessToken(newToken)
+            userPrefrence.updateAccessToken(newToken)
         }
     }
 
-    // --- Clear token (logout) ---
-    fun clearToken() {
+    // --- Clear all data ---
+    fun clearAllData() {
         viewModelScope.launch(Dispatchers.IO) {
             userPrefrence.clearToken()
         }

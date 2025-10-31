@@ -10,6 +10,7 @@ import com.nutrino.carbonfootprint.domain.repository.FacilityRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -27,13 +28,17 @@ class FacilityRepositoryImpl @Inject constructor(
     override suspend fun getFacilities(): Flow<ResultState<List<FacilityResponse>>> = flow {
         emit(ResultState.Loading)
         try {
-            val userId = userPrefrence.userId.first()
-            if (userId == null) {
+            val token = userPrefrence.accessToken.first()
+            if (token.isNullOrEmpty()) {
                 emit(ResultState.Error("User not logged in"))
                 return@flow
             }
 
-            val httpResponse = httpClient.get(Constants.BASE_URL + Constants.FACILITIES)
+            val httpResponse = httpClient.get(Constants.BASE_URL + Constants.FACILITIES) {
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+            }
 
             if (httpResponse.status.isSuccess()) {
                 val response = httpResponse.body<List<FacilityResponse>>()
@@ -63,21 +68,33 @@ class FacilityRepositoryImpl @Inject constructor(
     override suspend fun createFacility(createFacilityRequest: CreateFacilityRequest): Flow<ResultState<FacilityResponse>> = flow {
         emit(ResultState.Loading)
         try {
-            val userId = userPrefrence.userId.first()
-            if (userId == null) {
+            val token = userPrefrence.accessToken.first()
+            if (token.isNullOrEmpty()) {
                 emit(ResultState.Error("User not logged in"))
                 return@flow
             }
 
-            val userRole = userPrefrence.userRole.first()
-            if (userRole != "admin") {
-                emit(ResultState.Error("Only admins can create facilities"))
-                return@flow
+            // Sanitize country to meet API requirement (ISO-2 -> max 2 uppercase chars)
+            val sanitizedCountry = createFacilityRequest.country.trim().let { input ->
+                when {
+                    input.isBlank() -> ""
+                    input.equals("Unknown", ignoreCase = true) -> ""
+                    input.length == 2 -> input.uppercase()
+                    input.length > 2 -> input.take(2).uppercase()
+                    else -> input.uppercase()
+                }
             }
+            val sanitizedRequest = createFacilityRequest.copy(
+                country = sanitizedCountry,
+                grid_region = createFacilityRequest.grid_region.trim()
+            )
 
             val httpResponse = httpClient.post(Constants.BASE_URL + Constants.FACILITIES) {
                 contentType(ContentType.Application.Json)
-                setBody(createFacilityRequest)
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+                setBody(sanitizedRequest)
             }
 
             if (httpResponse.status.isSuccess()) {

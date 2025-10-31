@@ -9,6 +9,7 @@ import com.nutrino.carbonfootprint.domain.repository.UserRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.headers
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -22,24 +23,20 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getMe(): Flow<ResultState<GetMeResponse>> = flow {
         emit(ResultState.Loading)
         try {
-            val userId = userPrefrence.userId.first()
-            if (userId == null) {
+            val token = userPrefrence.accessToken.first()
+            if (token.isNullOrEmpty()) {
                 emit(ResultState.Error("User not logged in"))
                 return@flow
             }
 
             val httpResponse = httpClient.get(Constants.BASE_URL + Constants.GET_ME) {
-                // Session-based auth - cookies will be handled automatically by the client
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
             }
 
             if (httpResponse.status.isSuccess()) {
                 val response = httpResponse.body<GetMeResponse>()
-                // Update local user data with the response
-                userPrefrence.updateUserSession(
-                    userId = response.id,
-                    email = response.email,
-                    role = response.role
-                )
                 emit(ResultState.Success(response))
             } else {
                 val errorBody = try {

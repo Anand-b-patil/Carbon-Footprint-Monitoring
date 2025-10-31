@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private  val userPrefrence: UserPrefrence,
+    private val userPrefrence: UserPrefrence,
     private val httpClient: HttpClient
 ) : AuthRepository {
     override suspend fun signUp(signUpRequest: SignUpRequest): Flow<ResultState<SignUpResponse>> = flow {
@@ -34,13 +34,8 @@ class AuthRepositoryImpl @Inject constructor(
 
             if (httpResponse.status.isSuccess()) {
                 val response = httpResponse.body<SignUpResponse>()
-                // Store user session with the returned user_id (handle optional user_id)
-                val userId = response.user_id ?: 0 // Use 0 as fallback if user_id is null
-                userPrefrence.updateUserSession(
-                    userId = userId,
-                    email = signUpRequest.email,
-                    role = "admin" // Default role for organization creator
-                )
+                // Store access token from the response
+                userPrefrence.updateAccessToken(response.accessToken)
                 emit(ResultState.Success(response))
             } else {
                 val errorBody = try {
@@ -74,12 +69,8 @@ class AuthRepositoryImpl @Inject constructor(
 
             if (httpResponse.status.isSuccess()) {
                 val response = httpResponse.body<SignInResponse>()
-                // Store user session with the returned user_id (handle optional user_id)
-                val userId = response.user_id ?: 0 // Use 0 as fallback if user_id is null
-                userPrefrence.updateUserSession(
-                    userId = userId,
-                    email = signInRequest.email
-                )
+                // Store access token from the response
+                userPrefrence.updateAccessToken(response.accessToken)
                 emit(ResultState.Success(response))
             } else {
                 val errorBody = try {
