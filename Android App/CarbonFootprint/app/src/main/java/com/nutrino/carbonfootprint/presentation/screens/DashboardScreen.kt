@@ -171,13 +171,15 @@ fun DashboardScreen(
                                             fontWeight = FontWeight.Medium,
                                             modifier = Modifier.padding(top = 8.dp)
                                         )
-                                        summary.topCategories.take(5).forEach { category ->
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween
-                                            ) {
-                                                Text(category.name)
-                                                Text("${String.format("%.2f", category.value)} kg")
+                                        summary.topCategories.take(5).forEach { categoryArray ->
+                                            if (categoryArray.size >= 2) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    Text(categoryArray[0]) // category name
+                                                    Text("${String.format("%.2f", categoryArray[1].toDoubleOrNull() ?: 0.0)} kg") // category value
+                                                }
                                             }
                                         }
                                     }

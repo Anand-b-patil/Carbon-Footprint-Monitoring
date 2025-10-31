@@ -20,7 +20,7 @@ fun MainApp(userPreferenceViewModel: UserPreferenceViewModel = hiltViewModel()) 
 
     NavHost(
         navController = navController,
-        startDestination = SIGN_UP_SCREEN
+        startDestination = SIGN_IN_SCREEN
     ) {
         composable<SIGN_UP_SCREEN> {
             SignUpScreen(
