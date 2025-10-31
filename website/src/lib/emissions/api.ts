@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios/apiClient";
 import { categorizeAxiosError } from "@/lib/errors";
-import type { Emission, RecomputeRequest, RecomputeResponse } from "../../types/emission/emissiontypes";
+import type { Emission, RecomputeRequest, RecomputeResponse } from "@/types/emission/emissiontypes";
 
 /** List emissions with optional filters */
 export async function listEmissions(params?: {
