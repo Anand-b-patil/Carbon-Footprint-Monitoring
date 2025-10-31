@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios/apiClient";
 import { categorizeAxiosError } from "@/lib/errors";
-import type { KpisResponse, TrendPoint, SummaryResponse } from "../../types/analytics/analyticstypes";
+import type { KpisResponse, TrendPoint, SummaryResponse } from "@/types/analytics/analyticstypes";
 
 export async function getKpis(from: string, to: string): Promise<KpisResponse> {
   try {

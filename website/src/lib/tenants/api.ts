@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios/apiClient";
 import { categorizeAxiosError } from "@/lib/errors";
-import type { Facility, CreateFacilityRequest, TenantUser, CreateUserRequest } from "../../types/tenants/tenantstypes";
+import type { Facility, CreateFacilityRequest, TenantUser, CreateUserRequest } from "@/types/tenants/tenantstypes";
 
 /** Fetch list of facilities for the current tenant */
 export async function fetchFacilities(): Promise<Facility[]> {

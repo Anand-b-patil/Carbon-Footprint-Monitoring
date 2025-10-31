@@ -7,6 +7,11 @@ export type SignupRequest={
     password:string;
 };
 
+export type LoginRequest={
+    email:string;
+    password:string;
+};
+
 export type TokenResponse={
     access_token:string;
     token_type:"bearer";
@@ -41,8 +46,8 @@ export function login(token:string){
     }
 }
 
-/** Call backend login endpoint and return token response */
-export async function loginApi(credentials: { email: string; password: string }): Promise<TokenResponse> {
+
+export async function loginApi(credentials: LoginRequest): Promise<TokenResponse> {
     try {
         const res = await apiClient.post<TokenResponse>("/v1/auth/login", credentials);
         return res.data;

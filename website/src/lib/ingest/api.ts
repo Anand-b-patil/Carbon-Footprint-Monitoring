@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios/apiClient";
 import { categorizeAxiosError } from "@/lib/errors";
-import type { IngestRequest, IngestResponse } from "../../types/ingest/ingesttypes";
+import type { IngestRequest, IngestResponse } from "@/types/ingest/ingesttypes";
 
 /** Send a batch of events to the ingest endpoint */
 export async function ingestEvents(payload: IngestRequest): Promise<IngestResponse> {

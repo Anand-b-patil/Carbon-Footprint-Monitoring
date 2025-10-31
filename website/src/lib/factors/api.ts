@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios/apiClient";
 import { categorizeAxiosError } from "@/lib/errors";
-import type { CreateFactorRequest, Factor, FactorPreview } from "../../types/factors/factorstypes";
+import type { CreateFactorRequest, Factor, FactorPreview } from "@/types/factors/factorstypes";
 
 /** Create a new factor */
 export async function createFactor(payload: CreateFactorRequest): Promise<Factor> {
