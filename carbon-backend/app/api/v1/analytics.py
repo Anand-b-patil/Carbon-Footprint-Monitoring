@@ -5,7 +5,7 @@ from typing import Annotated, Literal, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
-from sqlalchemy import func, select
+from sqlalchemy import func, select, case
 from sqlalchemy.orm import Session
 
 from app.core.auth import require_role
@@ -82,9 +82,9 @@ class SummaryOut(BaseModel):
 def summary(db: Session = Depends(get_db), user: Annotated[User, Depends(require_role("viewer", "analyst", "admin"))] = None):
     totals_stmt = select(
         func.coalesce(func.sum(Emission.co2e_kg), 0),
-        func.coalesce(func.sum(func.case((Emission.scope == "1", Emission.co2e_kg), else_=0)), 0),
-        func.coalesce(func.sum(func.case((Emission.scope == "2", Emission.co2e_kg), else_=0)), 0),
-        func.coalesce(func.sum(func.case((Emission.scope == "3", Emission.co2e_kg), else_=0)), 0),
+        func.coalesce(func.sum(case((Emission.scope == "1", Emission.co2e_kg), else_=0)), 0),
+        func.coalesce(func.sum(case((Emission.scope == "2", Emission.co2e_kg), else_=0)), 0),
+        func.coalesce(func.sum(case((Emission.scope == "3", Emission.co2e_kg), else_=0)), 0),
     ).where(Emission.org_id == user.org_id)
     total, s1, s2, s3 = db.execute(totals_stmt).one()
 
