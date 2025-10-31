@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class IngestEventsResponse(
-    val created_events: Int,
-    val skipped_duplicates: Int,
-    val created_emissions: Int
+    val created_events: Int = 0,
+    val skipped_duplicates: Int = 0,
+    val created_emissions: Int = 0
 )

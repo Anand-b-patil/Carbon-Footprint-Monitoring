@@ -4,14 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class EventRequest(
-    val occurred_at: String,
-    val category: String,
-    val unit: String,
-    val value_numeric: Double,
+    val occurred_at: String = "",
+    val category: String = "",
+    val unit: String = "",
+    val value_numeric: Double = 0.0,
     val facility_id: Int? = null
 )
 
 @Serializable
 data class IngestEventsRequest(
-    val events: List<EventRequest>
+    val events: List<EventRequest> = emptyList()
 )
