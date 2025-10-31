@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PreviewFactorResponse(
-    val id: Int,
-    val category: String,
-    val geography: String,
-    val version: Int,
-    val factor_value: Double
+    val id: Int = 0,
+    val category: String = "",
+    val geography: String = "",
+    val version: Int = 0,
+    val factor_value: Double = 0.0
 )

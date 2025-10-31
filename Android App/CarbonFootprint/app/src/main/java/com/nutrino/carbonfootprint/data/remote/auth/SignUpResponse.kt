@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class SignUpResponse(
     @SerialName("access_token")
-    val accessToken: String,
+    val accessToken: String = "",
     @SerialName("token_type")
-    val tokenType: String
+    val tokenType: String = ""
 )
